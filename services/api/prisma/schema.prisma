@@ -1,0 +1,2033 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountState {
+  NEW
+  PROFILE_INCOMPLETE
+  STUDENT_VERIFICATION_PENDING
+  STUDENT_VERIFIED
+  CLASS_VERIFICATION_PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum MembershipStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  ENDED
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CourseOfferingStatus {
+  SCHEDULED
+  ACTIVE
+  ARCHIVED
+}
+
+enum AnnouncementPriority {
+  NORMAL
+  IMPORTANT
+  URGENT
+}
+
+enum AnnouncementStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ResourceStatus {
+  PROCESSING
+  PUBLISHED
+  ARCHIVED
+  REMOVED
+}
+
+enum ResourceVisibility {
+  PUBLIC
+  AUTHENTICATED_USERS
+  COURSE_MEMBERS
+  CLASS_MEMBERS
+  STUDY_GROUP_MEMBERS
+  PRIVATE
+}
+
+enum FileProcessingState {
+  PENDING
+  UPLOADING
+  SCANNING
+  PROCESSING
+  READY
+  AVAILABLE
+  RESTRICTED
+  ARCHIVED
+  DELETED
+  FAILED
+}
+
+enum ActivityType {
+  LECTURE
+  LABORATORY
+  TUTORIAL
+  ASSIGNMENT_DEADLINE
+  TEST
+  EXAM
+  EVENT
+  ORGANIZATION_MEETING
+  STUDY_GROUP
+  SERVICE_BOOKING
+  PERSONAL_TASK
+  PERSONAL_REMINDER
+  PERSONAL_APPOINTMENT
+  STUDY_SESSION
+  SPORT_TRAINING
+  SPORT_MATCH
+}
+
+enum ActivityStatus {
+  SCHEDULED
+  ONGOING
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}
+
+enum AttentionPriority {
+  CRITICAL
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum EndorsementType {
+  ENDORSED
+  ENDORSEMENT_REVOKED
+}
+
+enum ResourceRelationshipType {
+  SOLUTION_TO
+  REVISION_OF
+  RELATED_TO
+  REFERENCE_FOR
+  PART_OF
+}
+
+enum PersonnelRole {
+  LECTURER
+  TEACHING_ASSISTANT
+  COORDINATOR
+}
+
+enum ClassRole {
+  MEMBER
+  CLASS_REPRESENTATIVE
+}
+
+enum SearchObjectType {
+  PERSON
+  COURSE
+  CLASS
+  ORGANIZATION
+  EVENT
+  RESOURCE
+  STUDY_GROUP
+  SERVICE
+  ASSESSMENT
+  LABORATORY
+}
+
+enum AssessmentType {
+  ASSIGNMENT
+  TEST
+  EXAM
+  QUIZ
+  PROJECT
+  PRACTICAL
+  LABORATORY_ASSESSMENT
+  OTHER
+}
+
+enum AssessmentStatus {
+  DRAFT
+  PUBLISHED
+  OPEN
+  CLOSED
+  ARCHIVED
+  CANCELLED
+  EXTENDED
+  SCHEDULED
+  ONGOING
+  COMPLETED
+}
+
+enum SubmissionMode {
+  EXTERNAL
+  CAMPUSOS
+  NONE
+}
+
+enum DiscussionType {
+  QUESTION
+  DISCUSSION
+  RESOURCE_HELP
+  ASSESSMENT_HELP
+  LAB_HELP
+  ANNOUNCEMENT_DISCUSSION
+  OTHER
+}
+
+enum DiscussionStatus {
+  ACTIVE
+  CLOSED
+  ARCHIVED
+}
+
+enum StudyGroupStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum StudyGroupRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum ConversationKind {
+  DIRECT
+  GROUP
+  CLASS
+  COURSE
+  STUDY_GROUP
+  ORGANIZATION
+  SERVICE
+}
+
+enum FollowStatus {
+  FOLLOWING
+  UNFOLLOWED
+}
+
+enum ConnectionStatus {
+  REQUESTED
+  ACCEPTED
+  DECLINED
+  CANCELLED
+  REMOVED
+}
+
+enum OrganizationTypeKey {
+  ACADEMIC
+  PROFESSIONAL
+  RELIGIOUS
+  SPORTS
+  CULTURAL
+  SOCIAL
+  RESIDENCE
+  STUDENT_ASSOCIATION
+  POLITICAL
+  VOLUNTEER
+  INTEREST
+  OTHER
+}
+
+enum OrganizationStatus {
+  PROPOSED
+  PENDING_APPROVAL
+  ACTIVE
+  SUSPENDED
+  CLOSED
+  ARCHIVED
+  REJECTED
+}
+
+enum OrganizationMembershipPolicy {
+  OPEN
+  REQUEST_TO_JOIN
+  INVITATION_ONLY
+  RESTRICTED
+}
+
+enum OrganizationRoleKey {
+  FOLLOWER
+  MEMBER
+  OFFICER
+  ADMIN
+}
+
+enum OrganizationPostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  RESTRICTED
+  REMOVED
+}
+
+enum OrganizationMessagingPolicy {
+  MEMBERS_ONLY
+  OFFICERS_ONLY
+  FOLLOWERS_AND_MEMBERS
+  DISABLED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CANCELLED
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  ACADEMIC_MISCONDUCT
+  COPYRIGHT
+  IMPERSONATION
+  MISLEADING
+  OTHER
+}
+
+enum ModerationAction {
+  NO_ACTION
+  WARNING
+  HIDE
+  RESTRICT
+  REMOVE
+  CLOSE_THREAD
+  SUSPEND_USER
+}
+
+enum ServiceCategoryKey {
+  PRINTING
+  FOOD
+  LAUNDRY
+  BEAUTY
+  REPAIRS
+  TECHNOLOGY
+  DESIGN
+  PHOTOGRAPHY
+  TUTORING
+  TRANSPORT
+  ACCOMMODATION
+  PERSONAL_SERVICES
+  OTHER
+}
+
+enum ServiceProviderStatus {
+  DRAFT
+  PENDING_VERIFICATION
+  ACTIVE
+  PAUSED
+  SUSPENDED
+  CLOSED
+}
+
+enum ServiceStatus {
+  DRAFT
+  PUBLISHED
+  AVAILABLE
+  UNAVAILABLE
+  DISCONTINUED
+}
+
+enum ServiceMode {
+  ON_SITE
+  REMOTE
+  DELIVERY
+  PICKUP
+  ON_DEMAND
+  APPOINTMENT
+}
+
+enum ServicePricingModel {
+  FIXED
+  FROM
+  PER_UNIT
+  QUOTE_REQUIRED
+  FREE
+  CUSTOM
+}
+
+enum ServiceBookingPolicy {
+  OPEN_BOOKING
+  REQUEST_APPROVAL
+  REQUIRES_QUOTE
+  CONTACT_FIRST
+}
+
+enum ServiceCapacityType {
+  SINGLE
+  LIMITED
+  UNLIMITED
+}
+
+enum ServiceBookingFieldType {
+  TEXT
+  NUMBER
+  BOOLEAN
+  SELECT
+  MULTI_SELECT
+  DATE
+  TIME
+  FILE
+}
+
+enum BookingStatus {
+  DRAFT
+  REQUESTED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  DECLINED
+  CANCELLED
+  RESCHEDULED
+}
+
+enum BookingType {
+  APPOINTMENT
+  ORDER
+  REQUEST
+  QUOTE
+  ON_DEMAND
+}
+
+enum ServiceReviewStatus {
+  PUBLISHED
+  HIDDEN
+  REMOVED
+}
+
+model Person {
+  id           String       @id
+  phoneNumber  String       @unique
+  givenName    String?
+  middleName   String?
+  familyName   String?
+  displayName  String?
+  username     String?      @unique
+  bio          String?
+  photoFileId  String?
+  accountState AccountState @default(NEW)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  sessions                      Session[]
+  studentVerifications          StudentVerification[]
+  classMemberships              ClassMembership[]
+  enrollments                   Enrollment[]
+  coursePersonnel               CoursePersonnel[]
+  announcementsAuthored         Announcement[]
+  filesUploaded                 FileObject[]                  @relation("FileUploader")
+  resourcesUploaded             Resource[]                    @relation("ResourceUploader")
+  resourcesAuthored             Resource[]                    @relation("ResourceAuthor")
+  resourceVersions              ResourceVersion[]
+  endorsementsGiven             ResourceEndorsement[]
+  searchHistory                 SearchHistory[]
+  announcementReads             AnnouncementRead[]
+  notifications                 Notification[]
+  metadataEdits                 Resource[]                    @relation("ResourceMetadataEditor")
+  assessmentsCreated            Assessment[]                  @relation("AssessmentCreator")
+  assessmentsUpdated            Assessment[]                  @relation("AssessmentUpdater")
+  assessmentAudits              AssessmentAuditEvent[]
+  laboratoriesCreated           LaboratoryActivity[]
+  discussionsAuthored           Discussion[]
+  discussionReplies             DiscussionReply[]
+  studyGroupsCreated            StudyGroup[]
+  studyGroupMemberships         StudyGroupMembership[]
+  conversationsCreated          Conversation[]
+  messagesAuthored              Message[]
+  conversationMutes             ConversationMute[]
+  messageReactions              MessageReaction[]
+  messageReadStates             MessageReadState[]
+  conversationParts             ConversationParticipant[]
+  devices                       Device[]
+  notificationPreference        NotificationPreference?
+  reportsFiled                  ModerationReport[]            @relation("ReportReporter")
+  organizationsCreated          Organization[]                @relation("OrganizationCreator")
+  organizationMemberships       OrganizationMembership[]
+  organizationFollows           OrganizationFollow[]
+  organizationPosts             OrganizationPost[]            @relation("LegacyOrganizationPosts")
+  postsAuthored                 Post[]                        @relation("PostAuthor")
+  postMentions                  PostMention[]
+  postReactions                 PostReaction[]
+  commentsAuthored              Comment[]
+  fileAccessRecords             FileAccessRecord[]
+  organizationApprovals         OrganizationApproval[]
+  invitationsReceived           OrganizationInvitation[]      @relation("InvitationRecipient")
+  invitationsSent               OrganizationInvitation[]      @relation("InvitationSender")
+  blocksMade                    UserBlock[]                   @relation("Blocker")
+  blocksReceived                UserBlock[]                   @relation("Blocked")
+  eventsCreated                 CampusEvent[]                 @relation("EventCreator")
+  eventResponses                EventResponse[]
+  personalActivities            Activity[]                    @relation("PersonalActivityOwner")
+  activityReminders             ActivityReminder[]
+  followsGiven                  FollowRelationship[]          @relation("Follower")
+  followsReceived               FollowRelationship[]          @relation("Followed")
+  connectionsLow                ConnectionRelationship[]      @relation("ConnectionLow")
+  connectionsHigh               ConnectionRelationship[]      @relation("ConnectionHigh")
+  privacySettings               PrivacySettings?
+  savedObjects                  SavedObject[]
+  socialAudits                  SocialAudit[]
+  usernameChanges               UsernameChange[]
+  serviceProviderProfile        ServiceProviderProfile?
+  providerVerificationsReviewed ServiceProviderVerification[] @relation("ProviderVerificationReviewer")
+  bookingsAsCustomer            Booking[]                     @relation("BookingCustomer")
+  bookingStatusChanges          BookingStatusHistory[]
+  bookingFilesUploaded          BookingFile[]
+  serviceReviewsAuthored        ServiceReview[]
+  serviceAudits                 ServiceAudit[]
+}
+
+model Session {
+  id               String    @id
+  personId         String
+  person           Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  refreshTokenHash String
+  deviceLabel      String
+  ipAddress        String?
+  lastActiveAt     DateTime  @default(now())
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@index([personId])
+}
+
+model OtpChallenge {
+  id                String    @id
+  phoneNumber       String
+  codeHash          String
+  expiresAt         DateTime
+  resendAvailableAt DateTime
+  attemptCount      Int       @default(0)
+  consumedAt        DateTime?
+  createdAt         DateTime  @default(now())
+
+  @@index([phoneNumber, createdAt])
+}
+
+model OtpRateLimit {
+  id           String   @id
+  phoneNumber  String
+  windowStart  DateTime
+  requestCount Int      @default(0)
+
+  @@unique([phoneNumber, windowStart])
+}
+
+model Faculty {
+  id         String      @id
+  code       String      @unique
+  name       String
+  programmes Programme[]
+  courses    Course[]
+}
+
+model Programme {
+  id        String                @id
+  code      String                @unique
+  name      String
+  facultyId String
+  faculty   Faculty               @relation(fields: [facultyId], references: [id])
+  students  StudentVerification[]
+}
+
+model AcademicSemester {
+  id        String           @id
+  label     String
+  year      Int
+  term      Int
+  startsAt  DateTime
+  endsAt    DateTime
+  offerings CourseOffering[]
+  classes   AcademicClass[]
+}
+
+model Course {
+  id         String           @id
+  code       String           @unique
+  title      String
+  facultyId  String
+  faculty    Faculty          @relation(fields: [facultyId], references: [id])
+  department String
+  offerings  CourseOffering[]
+  resources  Resource[]
+}
+
+model CourseOffering {
+  id               String               @id
+  courseId         String
+  course           Course               @relation(fields: [courseId], references: [id])
+  semesterId       String
+  semester         AcademicSemester     @relation(fields: [semesterId], references: [id])
+  status           CourseOfferingStatus @default(ACTIVE)
+  description      String?
+  learningOutcomes Json
+  outline          Json
+  references       Json
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  personnel         CoursePersonnel[]
+  enrollments       Enrollment[]
+  announcements     Announcement[]
+  resources         Resource[]
+  activities        Activity[]
+  studyGroups       StudyGroup[]
+  assessments       Assessment[]
+  laboratories      LaboratoryActivity[]
+  discussions       Discussion[]
+  studyGroupCourses StudyGroupCourse[]
+}
+
+model CoursePersonnel {
+  id               String         @id
+  courseOfferingId String
+  courseOffering   CourseOffering @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+  personId         String
+  person           Person         @relation(fields: [personId], references: [id])
+  role             PersonnelRole
+  permissions      String[]
+
+  @@unique([courseOfferingId, personId, role])
+}
+
+model Enrollment {
+  id               String           @id
+  courseOfferingId String
+  courseOffering   CourseOffering   @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+  personId         String
+  person           Person           @relation(fields: [personId], references: [id])
+  status           MembershipStatus @default(ACTIVE)
+  createdAt        DateTime         @default(now())
+
+  @@unique([courseOfferingId, personId])
+}
+
+model AcademicClass {
+  id          String           @id
+  code        String
+  name        String
+  yearOfStudy Int
+  facultyName String
+  semesterId  String
+  semester    AcademicSemester @relation(fields: [semesterId], references: [id])
+  createdAt   DateTime         @default(now())
+
+  memberships ClassMembership[]
+  activities  Activity[]
+
+  @@unique([code, semesterId])
+}
+
+model ClassMembership {
+  id        String           @id
+  classId   String
+  class     AcademicClass    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person           @relation(fields: [personId], references: [id])
+  role      ClassRole        @default(MEMBER)
+  status    MembershipStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([classId, personId])
+}
+
+model StudentVerification {
+  id                 String             @id
+  personId           String
+  person             Person             @relation(fields: [personId], references: [id], onDelete: Cascade)
+  registrationNumber String
+  programmeId        String
+  programme          Programme          @relation(fields: [programmeId], references: [id])
+  facultyId          String
+  evidenceFileId     String?
+  status             VerificationStatus @default(PENDING)
+  rejectionReason    String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([personId])
+}
+
+model Announcement {
+  id               String               @id
+  courseOfferingId String
+  courseOffering   CourseOffering       @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           Person               @relation(fields: [authorId], references: [id])
+  title            String
+  body             String
+  priority         AnnouncementPriority @default(NORMAL)
+  status           AnnouncementStatus   @default(PUBLISHED)
+  publishedAt      DateTime?
+  expiresAt        DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  reads         AnnouncementRead[]
+  attachments   FileObject[]
+  notifications Notification[]
+
+  @@index([courseOfferingId, status, publishedAt])
+}
+
+model AnnouncementRead {
+  id             String       @id
+  announcementId String
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person       @relation(fields: [personId], references: [id], onDelete: Cascade)
+  readAt         DateTime     @default(now())
+
+  @@unique([announcementId, personId])
+}
+
+model FileObject {
+  id              String              @id
+  uploaderId      String?
+  uploader        Person?             @relation("FileUploader", fields: [uploaderId], references: [id])
+  originalName    String
+  mimeType        String
+  sizeBytes       Int
+  checksumSha256  String?
+  storageKey      String
+  processingState FileProcessingState @default(PENDING)
+  securityClass   String              @default("PRIVATE")
+  lifecycleState  String              @default("UPLOADING")
+  uploadContext   String?
+  clientActionId  String?
+  displayName     String?
+  width           Int?
+  height          Int?
+  duration        Int?
+  deletedAt       DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  announcement                Announcement?                 @relation(fields: [announcementId], references: [id])
+  announcementId              String?
+  versions                    ResourceVersion[]
+  discussionAttachments       DiscussionAttachment[]
+  organizationPostAttachments OrganizationPostAttachment[]
+  bookingFiles                BookingFile[]
+  providerVerifications       ServiceProviderVerification[]
+  postAttachments             PostAttachment[]
+  accessRecords               FileAccessRecord[]
+
+  @@unique([uploaderId, clientActionId])
+}
+
+model FileAccessRecord {
+  id        String     @id
+  fileId    String
+  file      FileObject @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person     @relation(fields: [personId], references: [id])
+  event     String
+  action    String?
+  createdAt DateTime   @default(now())
+
+  @@index([fileId, createdAt])
+}
+
+model ResourceCategory {
+  id         String     @id
+  key        String     @unique
+  label      String
+  groupKey   String
+  groupLabel String
+  sortOrder  Int
+  resources  Resource[]
+}
+
+model Resource {
+  id                 String             @id
+  courseId           String
+  course             Course             @relation(fields: [courseId], references: [id])
+  courseOfferingId   String
+  courseOffering     CourseOffering     @relation(fields: [courseOfferingId], references: [id])
+  title              String
+  description        String?
+  resourceType       String
+  categoryId         String?
+  category           ResourceCategory?  @relation(fields: [categoryId], references: [id])
+  visibility         ResourceVisibility @default(COURSE_MEMBERS)
+  status             ResourceStatus     @default(PROCESSING)
+  uploadedById       String
+  uploadedBy         Person             @relation("ResourceUploader", fields: [uploadedById], references: [id])
+  authoredById       String
+  authoredBy         Person             @relation("ResourceAuthor", fields: [authoredById], references: [id])
+  currentVersionId   String?            @unique
+  academicYear       Int?
+  semesterLabel      String?
+  solutionAvailable  Boolean            @default(false)
+  publishedAt        DateTime?
+  editableUntil      DateTime
+  metadataEditedById String?
+  metadataEditedBy   Person?            @relation("ResourceMetadataEditor", fields: [metadataEditedById], references: [id])
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  versions      ResourceVersion[]
+  endorsements  ResourceEndorsement[]
+  fromRelations ResourceRelationship[] @relation("FromResource")
+  toRelations   ResourceRelationship[] @relation("ToResource")
+  notifications Notification[]
+  postAttachments PostAttachment[]
+
+  @@index([courseOfferingId, status])
+  @@index([courseId, academicYear])
+}
+
+model ResourceVersion {
+  id            String     @id
+  resourceId    String
+  resource      Resource   @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  fileId        String
+  file          FileObject @relation(fields: [fileId], references: [id])
+  uploadedById  String
+  uploadedBy    Person     @relation(fields: [uploadedById], references: [id])
+  changeSummary String?
+  checksum      String?
+  status        String     @default("CURRENT")
+  createdAt     DateTime   @default(now())
+
+  @@unique([resourceId, versionNumber])
+}
+
+model ResourceEndorsement {
+  id              String          @id
+  resourceId      String
+  resource        Resource        @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  endorserId      String
+  endorser        Person          @relation(fields: [endorserId], references: [id])
+  endorsementType EndorsementType @default(ENDORSED)
+  comment         String?
+  createdAt       DateTime        @default(now())
+  revokedAt       DateTime?
+
+  @@index([resourceId])
+}
+
+model ResourceRelationship {
+  id             String                   @id
+  fromResourceId String
+  fromResource   Resource                 @relation("FromResource", fields: [fromResourceId], references: [id], onDelete: Cascade)
+  toResourceId   String
+  toResource     Resource                 @relation("ToResource", fields: [toResourceId], references: [id], onDelete: Cascade)
+  type           ResourceRelationshipType
+  createdAt      DateTime                 @default(now())
+
+  @@unique([fromResourceId, toResourceId, type])
+}
+
+model Activity {
+  id               String              @id
+  type             ActivityType
+  title            String
+  description      String?
+  startTime        DateTime
+  endTime          DateTime
+  timezone         String              @default("Africa/Harare")
+  location         String?
+  status           ActivityStatus      @default(SCHEDULED)
+  relevanceWeight  Int                 @default(50)
+  sourceType       String?
+  sourceId         String?
+  organizerType    String?
+  organizerId      String?
+  visibility       String              @default("PUBLIC")
+  recurrenceRule   Json?
+  version          Int                 @default(1)
+  ownerPersonId    String?
+  owner            Person?             @relation("PersonalActivityOwner", fields: [ownerPersonId], references: [id])
+  courseOfferingId String?
+  courseOffering   CourseOffering?     @relation(fields: [courseOfferingId], references: [id])
+  classId          String?
+  class            AcademicClass?      @relation(fields: [classId], references: [id])
+  organizationId   String?
+  organization     Organization?       @relation(fields: [organizationId], references: [id])
+  studyGroupId     String?
+  studyGroup       StudyGroup?         @relation(fields: [studyGroupId], references: [id])
+  assessmentId     String?
+  assessment       Assessment?         @relation(fields: [assessmentId], references: [id])
+  laboratoryId     String?
+  laboratory       LaboratoryActivity? @relation(fields: [laboratoryId], references: [id])
+  eventId          String?
+  event            CampusEvent?        @relation(fields: [eventId], references: [id])
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  reminders        ActivityReminder[]
+  booking          Booking?
+
+  @@index([startTime, status])
+  @@index([sourceType, sourceId])
+  @@index([ownerPersonId, startTime])
+}
+
+model Assessment {
+  id                    String           @id
+  courseOfferingId      String
+  courseOffering        CourseOffering   @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+  title                 String
+  description           String?
+  assessmentType        String
+  status                AssessmentStatus @default(DRAFT)
+  publishedAt           DateTime?
+  dueAt                 DateTime?
+  startAt               DateTime?
+  endAt                 DateTime?
+  timezone              String           @default("Africa/Harare")
+  weight                Decimal?         @db.Decimal(5, 2)
+  instructions          String?
+  location              String?
+  topics                Json?
+  submissionMode        SubmissionMode   @default(NONE)
+  externalSubmissionUrl String?
+  createdById           String
+  createdBy             Person           @relation("AssessmentCreator", fields: [createdById], references: [id])
+  updatedById           String?
+  updatedBy             Person?          @relation("AssessmentUpdater", fields: [updatedById], references: [id])
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  resources    AssessmentResource[]
+  activities   Activity[]
+  audits       AssessmentAuditEvent[]
+  laboratories LaboratoryActivity[]
+
+  @@index([courseOfferingId, assessmentType, status])
+}
+
+model AssessmentResource {
+  id           String     @id
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  resourceId   String
+  createdAt    DateTime   @default(now())
+
+  @@unique([assessmentId, resourceId])
+}
+
+model AssessmentAuditEvent {
+  id             String     @id
+  assessmentId   String
+  assessment     Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  actorId        String
+  actor          Person     @relation(fields: [actorId], references: [id])
+  action         String
+  previousState  String?
+  newState       String?
+  previousValues Json?
+  newValues      Json?
+  reason         String?
+  createdAt      DateTime   @default(now())
+}
+
+model LaboratoryActivity {
+  id                 String               @id
+  courseOfferingId   String
+  courseOffering     CourseOffering       @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+  title              String
+  description        String?
+  objective          String?
+  location           String?
+  startAt            DateTime?
+  endAt              DateTime?
+  status             String               @default("PUBLISHED")
+  instructions       String?
+  preparation        Json?
+  safetyLevel        String?
+  safetyInstructions String?
+  requiredPpe        Json?
+  hazards            Json?
+  equipment          Json?
+  assessmentId       String?
+  assessment         Assessment?          @relation(fields: [assessmentId], references: [id])
+  createdById        String
+  createdBy          Person               @relation(fields: [createdById], references: [id])
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  resources          LaboratoryResource[]
+  activities         Activity[]
+
+  @@index([courseOfferingId, status])
+}
+
+model LaboratoryResource {
+  id           String             @id
+  laboratoryId String
+  laboratory   LaboratoryActivity @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+  resourceId   String
+  kind         String             @default("RELATED")
+
+  @@unique([laboratoryId, resourceId])
+}
+
+model Discussion {
+  id               String           @id
+  courseOfferingId String
+  courseOffering   CourseOffering   @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           Person           @relation(fields: [authorId], references: [id])
+  title            String
+  body             String
+  type             DiscussionType   @default(DISCUSSION)
+  status           DiscussionStatus @default(ACTIVE)
+  pinned           Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  closedAt         DateTime?
+
+  replies     DiscussionReply[]
+  attachments DiscussionAttachment[]
+  mentions    DiscussionMention[]
+  reports     ModerationReport[]
+}
+
+model DiscussionReply {
+  id             String     @id
+  discussionId   String
+  discussion     Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  authorId       String
+  author         Person     @relation(fields: [authorId], references: [id])
+  body           String
+  status         String     @default("ACTIVE")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  clientActionId String?
+
+  mentions    DiscussionMention[]
+  attachments DiscussionAttachment[]
+  reports     ModerationReport[]
+}
+
+model DiscussionAttachment {
+  id           String           @id
+  discussionId String?
+  discussion   Discussion?      @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  replyId      String?
+  reply        DiscussionReply? @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  fileId       String?
+  file         FileObject?      @relation(fields: [fileId], references: [id])
+  resourceId   String?
+  createdAt    DateTime         @default(now())
+}
+
+model DiscussionMention {
+  id           String           @id
+  discussionId String?
+  discussion   Discussion?      @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  replyId      String?
+  reply        DiscussionReply? @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  personId     String
+  createdAt    DateTime         @default(now())
+}
+
+model Conversation {
+  id             String           @id
+  kind           ConversationKind
+  title          String?
+  description    String?
+  contextType    String?
+  contextId      String?
+  status         String           @default("ACTIVE")
+  createdById    String?
+  createdBy      Person?          @relation(fields: [createdById], references: [id])
+  lastMessageId  String?
+  lastActivityAt DateTime         @default(now())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  locked         Boolean          @default(false)
+
+  messages      Message[]
+  studyGroups   StudyGroup[]
+  organizations Organization[]
+  mutes         ConversationMute[]
+  readStates    MessageReadState[]
+  participants  ConversationParticipant[]
+  bookings      Booking[]
+
+  @@index([contextType, contextId])
+}
+
+model ConversationParticipant {
+  id             String       @id
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person       @relation(fields: [personId], references: [id])
+  role           String       @default("MEMBER")
+  status         String       @default("ACTIVE")
+  joinedAt       DateTime     @default(now())
+
+  @@unique([conversationId, personId])
+}
+
+model Message {
+  id               String       @id
+  conversationId   String
+  conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId         String
+  author           Person       @relation(fields: [senderId], references: [id])
+  body             String       @default("")
+  messageType      String       @default("TEXT")
+  replyToMessageId String?
+  status           String       @default("SENT")
+  clientActionId   String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  editedAt         DateTime?
+  removedAt        DateTime?
+  resourceId       String?
+
+  reactions MessageReaction[]
+  mentions  MessageMention[]
+  shares    MessageSharedObject[]
+  reports   ModerationReport[]
+
+  @@unique([conversationId, clientActionId])
+  @@index([conversationId, createdAt])
+}
+
+model ConversationMute {
+  id             String       @id
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person       @relation(fields: [personId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@unique([conversationId, personId])
+}
+
+model MessageReaction {
+  id        String   @id
+  messageId String
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person   @relation(fields: [personId], references: [id])
+  reaction  String
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, personId, reaction])
+}
+
+model MessageMention {
+  id        String   @id
+  messageId String
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  personId  String
+  createdAt DateTime @default(now())
+}
+
+model MessageSharedObject {
+  id         String  @id
+  messageId  String
+  message    Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  objectType String
+  objectId   String
+}
+
+model MessageReadState {
+  id             String       @id
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person       @relation(fields: [personId], references: [id])
+  lastReadAt     DateTime     @default(now())
+
+  @@unique([conversationId, personId])
+}
+
+model StudyGroup {
+  id               String           @id
+  name             String
+  description      String?
+  createdById      String
+  createdBy        Person           @relation(fields: [createdById], references: [id])
+  courseOfferingId String?
+  courseOffering   CourseOffering?  @relation(fields: [courseOfferingId], references: [id])
+  visibility       String           @default("COURSE_MEMBERS")
+  membershipPolicy String           @default("OPEN")
+  status           StudyGroupStatus @default(ACTIVE)
+  maxMembers       Int?
+  memberCount      Int              @default(0)
+  conversationId   String?
+  conversation     Conversation?    @relation(fields: [conversationId], references: [id])
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  memberships StudyGroupMembership[]
+  courses     StudyGroupCourse[]
+  activities  Activity[]
+}
+
+model StudyGroupMembership {
+  id           String           @id
+  studyGroupId String
+  studyGroup   StudyGroup       @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
+  personId     String
+  person       Person           @relation(fields: [personId], references: [id])
+  role         StudyGroupRole   @default(MEMBER)
+  status       MembershipStatus @default(ACTIVE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([studyGroupId, personId])
+}
+
+model StudyGroupCourse {
+  id               String         @id
+  studyGroupId     String
+  studyGroup       StudyGroup     @relation(fields: [studyGroupId], references: [id], onDelete: Cascade)
+  courseOfferingId String
+  courseOffering   CourseOffering @relation(fields: [courseOfferingId], references: [id], onDelete: Cascade)
+
+  @@unique([studyGroupId, courseOfferingId])
+}
+
+model OrganizationType {
+  id            String         @id
+  key           String         @unique
+  label         String
+  organizations Organization[]
+}
+
+model Organization {
+  id               String                       @id
+  name             String
+  description      String?
+  typeId           String?
+  type             OrganizationType?            @relation(fields: [typeId], references: [id])
+  typeKey          OrganizationTypeKey          @default(INTEREST)
+  status           OrganizationStatus           @default(PROPOSED)
+  visibility       String                       @default("PUBLIC")
+  membershipPolicy OrganizationMembershipPolicy @default(OPEN)
+  messagingPolicy  OrganizationMessagingPolicy  @default(MEMBERS_ONLY)
+  createdById      String?
+  createdBy        Person?                      @relation("OrganizationCreator", fields: [createdById], references: [id])
+  imageFileId      String?
+  followerCount    Int                          @default(0)
+  memberCount      Int                          @default(0)
+  conversationId   String?
+  conversation     Conversation?                @relation(fields: [conversationId], references: [id])
+  createdAt        DateTime                     @default(now())
+  updatedAt        DateTime                     @updatedAt
+
+  activities           Activity[]
+  events               CampusEvent[]
+  memberships          OrganizationMembership[]
+  follows              OrganizationFollow[]
+  posts                Post[]
+  legacyPosts          OrganizationPost[]           @relation("LegacyOrgPosts")
+  approvals            OrganizationApproval[]
+  invitations          OrganizationInvitation[]
+  notificationSettings OrganizationNotificationSetting[]
+}
+
+model OrganizationMembership {
+  id             String              @id
+  organizationId String
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person              @relation(fields: [personId], references: [id])
+  role           OrganizationRoleKey @default(MEMBER)
+  officerTitle   String?
+  status         MembershipStatus    @default(PENDING)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@unique([organizationId, personId])
+}
+
+model OrganizationFollow {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person       @relation(fields: [personId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, personId])
+}
+
+model OrganizationApproval {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reviewerId     String
+  reviewer       Person       @relation(fields: [reviewerId], references: [id])
+  decision       String
+  reason         String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model OrganizationInvitation {
+  id             String           @id
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personId       String
+  person         Person           @relation("InvitationRecipient", fields: [personId], references: [id])
+  invitedById    String
+  invitedBy      Person           @relation("InvitationSender", fields: [invitedById], references: [id])
+  status         InvitationStatus @default(PENDING)
+  expiresAt      DateTime?
+  createdAt      DateTime         @default(now())
+}
+
+model OrganizationPost {
+  id             String                       @id
+  organizationId String
+  organization   Organization                 @relation("LegacyOrgPosts", fields: [organizationId], references: [id], onDelete: Cascade)
+  authorId       String
+  author         Person                       @relation("LegacyOrganizationPosts", fields: [authorId], references: [id])
+  body           String
+  visibility     String                       @default("PUBLIC")
+  status         OrganizationPostStatus       @default(PUBLISHED)
+  kind           String                       @default("POST")
+  publishedAt    DateTime?
+  createdAt      DateTime                     @default(now())
+  updatedAt      DateTime                     @updatedAt
+  attachments    OrganizationPostAttachment[]
+}
+
+model Post {
+  id                String    @id
+  authorId          String
+  author            Person    @relation("PostAuthor", fields: [authorId], references: [id])
+  contextType       String
+  contextId         String?
+  organizationId    String?
+  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  body              String
+  status            String    @default("PUBLISHED")
+  visibility        String    @default("CAMPUS_ONLY")
+  interactionPolicy String?
+  kind              String    @default("POST")
+  publishedAt       DateTime?
+  removedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  attachments PostAttachment[]
+  mentions    PostMention[]
+  reactions   PostReaction[]
+  comments    Comment[]
+  reports     ModerationReport[]
+
+  @@index([contextType, contextId, status, publishedAt])
+  @@index([organizationId, status])
+}
+
+model PostAttachment {
+  id         String      @id
+  postId     String
+  post       Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  fileId     String?
+  file       FileObject? @relation(fields: [fileId], references: [id])
+  resourceId String?
+  resource   Resource?   @relation(fields: [resourceId], references: [id])
+  sortOrder  Int         @default(0)
+}
+
+model PostMention {
+  id       String @id
+  postId   String
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  personId String
+  person   Person @relation(fields: [personId], references: [id])
+}
+
+model PostReaction {
+  id        String   @id
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person   @relation(fields: [personId], references: [id])
+  reaction  String
+  createdAt DateTime @default(now())
+
+  @@unique([postId, personId])
+}
+
+model Comment {
+  id              String    @id
+  postId          String
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId        String
+  author          Person    @relation(fields: [authorId], references: [id])
+  body            String
+  parentCommentId String?
+  parent          Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies         Comment[] @relation("CommentReplies")
+  status          String    @default("PUBLISHED")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  removedAt       DateTime?
+
+  @@index([postId, createdAt])
+}
+
+model OrganizationPostAttachment {
+  id     String           @id
+  postId String
+  post   OrganizationPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  fileId String
+  file   FileObject       @relation(fields: [fileId], references: [id])
+}
+
+model OrganizationNotificationSetting {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personId       String
+  posts          String       @default("IMPORTANT")
+  events         String       @default("REMINDERS")
+  announcements  String       @default("ALL")
+  messages       String       @default("ON")
+
+  @@unique([organizationId, personId])
+}
+
+model Venue {
+  id                       String        @id
+  name                     String
+  building                 String?
+  room                     String?
+  address                  String?
+  latitude                 Float?
+  longitude                Float?
+  instructions             String?
+  accessibilityInformation String?
+  events                   CampusEvent[]
+}
+
+model CampusEvent {
+  id                      String          @id
+  title                   String
+  description             String?
+  eventType               String          @default("ORGANIZATION")
+  status                  String          @default("PUBLISHED")
+  organizerType           String          @default("ORGANIZATION")
+  organizerId             String?
+  organizationId          String?
+  organization            Organization?   @relation(fields: [organizationId], references: [id])
+  createdById             String?
+  createdBy               Person?         @relation("EventCreator", fields: [createdById], references: [id])
+  visibility              String          @default("PUBLIC")
+  participationPolicy     String          @default("OPEN")
+  capacity                Int?
+  venueId                 String?
+  venue                   Venue?          @relation(fields: [venueId], references: [id])
+  location                String?
+  startsAt                DateTime
+  endsAt                  DateTime?
+  timezone                String          @default("Africa/Harare")
+  activityId              String?         @unique
+  coverMediaId            String?
+  registrationRequired    Boolean         @default(false)
+  externalRegistrationUrl String?
+  contactInformation      String?
+  participantVisibility   String          @default("COUNT_ONLY")
+  version                 Int             @default(1)
+  publishedAt             DateTime?
+  cancelledAt             DateTime?
+  completedAt             DateTime?
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  activities              Activity[]
+  responses               EventResponse[]
+  audits                  EventAudit[]
+}
+
+model EventResponse {
+  id        String      @id
+  eventId   String
+  event     CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  personId  String
+  person    Person      @relation(fields: [personId], references: [id])
+  response  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([eventId, personId])
+}
+
+model EventAudit {
+  id             String      @id
+  eventId        String
+  event          CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  actorId        String
+  action         String
+  previousValues Json?
+  newValues      Json?
+  reason         String?
+  requestId      String?
+  createdAt      DateTime    @default(now())
+}
+
+model ActivityReminder {
+  id            String   @id
+  activityId    String
+  activity      Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  personId      String
+  person        Person   @relation(fields: [personId], references: [id])
+  offsetMinutes Int
+  createdAt     DateTime @default(now())
+
+  @@unique([activityId, personId, offsetMinutes])
+}
+
+model ModerationReport {
+  id           String            @id
+  reporterId   String
+  reporter     Person            @relation("ReportReporter", fields: [reporterId], references: [id])
+  targetType   String
+  targetId     String
+  reason       ReportReason
+  details      String?
+  status       String            @default("OPEN")
+  action       ModerationAction?
+  createdAt    DateTime          @default(now())
+  discussionId String?
+  discussion   Discussion?       @relation(fields: [discussionId], references: [id])
+  replyId      String?
+  reply        DiscussionReply?  @relation(fields: [replyId], references: [id])
+  postId       String?
+  post         Post?             @relation(fields: [postId], references: [id])
+  messageId    String?
+  message      Message?          @relation(fields: [messageId], references: [id])
+  reviewId     String?
+  review       ServiceReview?    @relation(fields: [reviewId], references: [id])
+}
+
+model UserBlock {
+  id        String   @id
+  blockerId String
+  blocker   Person   @relation("Blocker", fields: [blockerId], references: [id])
+  blockedId String
+  blocked   Person   @relation("Blocked", fields: [blockedId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+}
+
+model ServiceCategory {
+  id          String             @id
+  key         ServiceCategoryKey @unique
+  label       String
+  description String?
+  sortOrder   Int                @default(0)
+  active      Boolean            @default(true)
+  services    Service[]
+}
+
+model ServiceProviderProfile {
+  id                  String                @id
+  personId            String                @unique
+  person              Person                @relation(fields: [personId], references: [id], onDelete: Cascade)
+  providerName        String
+  tagline             String?
+  about               String?
+  status              ServiceProviderStatus @default(DRAFT)
+  verified            Boolean               @default(false)
+  contactPreference   String                @default("CAMPUSOS_MESSAGES")
+  respondsWithinHours Int?
+  ratingAverage       Float?
+  ratingCount         Int                   @default(0)
+  completedBookings   Int                   @default(0)
+  logoFileId          String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  suspendedAt         DateTime?
+  closedAt            DateTime?
+
+  verifications ServiceProviderVerification[]
+  locations     ServiceLocation[]
+  services      Service[]
+  bookings      Booking[]
+  reviews       ServiceReview[]
+
+  @@index([status])
+}
+
+model ServiceProviderVerification {
+  id              String                 @id
+  providerId      String
+  provider        ServiceProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  status          VerificationStatus     @default(PENDING)
+  evidenceFileId  String?
+  evidenceFile    FileObject?            @relation(fields: [evidenceFileId], references: [id])
+  submittedNotes  String?
+  reviewedById    String?
+  reviewedBy      Person?                @relation("ProviderVerificationReviewer", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@index([providerId, status])
+}
+
+model ServiceLocation {
+  id                       String                 @id
+  providerId               String
+  provider                 ServiceProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  label                    String
+  building                 String?
+  room                     String?
+  address                  String?
+  latitude                 Float?
+  longitude                Float?
+  instructions             String?
+  accessibilityInformation String?
+  createdAt                DateTime               @default(now())
+
+  services Service[]
+  bookings Booking[]
+
+  @@index([providerId])
+}
+
+model Service {
+  id                        String                 @id
+  providerId                String
+  provider                  ServiceProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  categoryId                String
+  category                  ServiceCategory        @relation(fields: [categoryId], references: [id])
+  title                     String
+  summary                   String?
+  description               String?
+  status                    ServiceStatus          @default(DRAFT)
+  serviceMode               ServiceMode            @default(ON_SITE)
+  pricingModel              ServicePricingModel    @default(FIXED)
+  priceAmount               Decimal?               @db.Decimal(12, 2)
+  priceCurrency             String                 @default("USD")
+  priceUnit                 String?
+  pricingNotes              String?
+  bookingPolicy             ServiceBookingPolicy   @default(REQUEST_APPROVAL)
+  bookingType               BookingType            @default(APPOINTMENT)
+  capacityType              ServiceCapacityType    @default(SINGLE)
+  capacityValue             Int?
+  durationMinutes           Int?
+  leadTimeMinutes           Int                    @default(0)
+  cancellationWindowMinutes Int                    @default(120)
+  visibility                String                 @default("CAMPUS")
+  locationId                String?
+  location                  ServiceLocation?       @relation(fields: [locationId], references: [id])
+  ratingAverage             Float?
+  ratingCount               Int                    @default(0)
+  bookingCount              Int                    @default(0)
+  publishedAt               DateTime?
+  unavailableReason         String?
+  discontinuedAt            DateTime?
+  version                   Int                    @default(1)
+  createdAt                 DateTime               @default(now())
+  updatedAt                 DateTime               @updatedAt
+
+  bookingFields          ServiceBookingField[]
+  availabilityRules      ServiceAvailabilityRule[]
+  availabilityExceptions ServiceAvailabilityException[]
+  bookings               Booking[]
+  reviews                ServiceReview[]
+
+  @@index([status, categoryId])
+  @@index([providerId, status])
+}
+
+model ServiceBookingField {
+  id        String                  @id
+  serviceId String
+  service   Service                 @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  key       String
+  label     String
+  helpText  String?
+  fieldType ServiceBookingFieldType @default(TEXT)
+  required  Boolean                 @default(false)
+  options   Json?
+  minValue  Int?
+  maxValue  Int?
+  maxLength Int?
+  sortOrder Int                     @default(0)
+  active    Boolean                 @default(true)
+
+  values BookingFieldValue[]
+
+  @@unique([serviceId, key])
+}
+
+model ServiceAvailabilityRule {
+  id          String   @id
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int
+  startMinute Int
+  endMinute   Int
+  slotMinutes Int?
+  capacity    Int?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@unique([serviceId, dayOfWeek, startMinute, endMinute])
+  @@index([serviceId, dayOfWeek])
+}
+
+model ServiceAvailabilityException {
+  id          String   @id
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  date        DateTime
+  closed      Boolean  @default(true)
+  startMinute Int?
+  endMinute   Int?
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  @@unique([serviceId, date])
+  @@index([serviceId, date])
+}
+
+model Booking {
+  id                       String                 @id
+  serviceId                String
+  service                  Service                @relation(fields: [serviceId], references: [id])
+  providerId               String
+  provider                 ServiceProviderProfile @relation(fields: [providerId], references: [id])
+  customerId               String
+  customer                 Person                 @relation("BookingCustomer", fields: [customerId], references: [id])
+  bookingType              BookingType            @default(APPOINTMENT)
+  status                   BookingStatus          @default(DRAFT)
+  requestedStart           DateTime?
+  requestedEnd             DateTime?
+  confirmedStart           DateTime?
+  confirmedEnd             DateTime?
+  timezone                 String                 @default("Africa/Harare")
+  quantity                 Int                    @default(1)
+  customerNotes            String?
+  providerMessage          String?
+  providerInternalNotes    String?
+  declineReason            String?
+  cancellationReason       String?
+  cancelledById            String?
+  quotedAmount             Decimal?               @db.Decimal(12, 2)
+  quotedCurrency           String?
+  locationId               String?
+  location                 ServiceLocation?       @relation(fields: [locationId], references: [id])
+  activityId               String?                @unique
+  activity                 Activity?              @relation(fields: [activityId], references: [id])
+  conversationId           String?
+  conversation             Conversation?          @relation(fields: [conversationId], references: [id])
+  rescheduledFromBookingId String?
+  clientActionId           String?
+  version                  Int                    @default(1)
+  requestedAt              DateTime?
+  confirmedAt              DateTime?
+  startedAt                DateTime?
+  completedAt              DateTime?
+  declinedAt               DateTime?
+  cancelledAt              DateTime?
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+
+  fieldValues   BookingFieldValue[]
+  statusHistory BookingStatusHistory[]
+  files         BookingFile[]
+  review        ServiceReview?
+
+  @@unique([customerId, clientActionId])
+  @@index([providerId, status, confirmedStart])
+  @@index([customerId, status])
+  @@index([serviceId, status, confirmedStart])
+}
+
+model BookingFieldValue {
+  id           String               @id
+  bookingId    String
+  booking      Booking              @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  fieldId      String?
+  field        ServiceBookingField? @relation(fields: [fieldId], references: [id])
+  key          String
+  label        String
+  valueText    String?
+  valueNumber  Decimal?             @db.Decimal(14, 4)
+  valueBoolean Boolean?
+  valueDate    DateTime?
+  valueJson    Json?
+  fileId       String?
+
+  @@unique([bookingId, key])
+}
+
+model BookingStatusHistory {
+  id         String         @id
+  bookingId  String
+  booking    Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  actorId    String?
+  actor      Person?        @relation(fields: [actorId], references: [id])
+  fromStatus BookingStatus?
+  toStatus   BookingStatus
+  reason     String?
+  metadata   Json?
+  createdAt  DateTime       @default(now())
+
+  @@index([bookingId, createdAt])
+}
+
+model BookingFile {
+  id           String     @id
+  bookingId    String
+  booking      Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  fileId       String
+  file         FileObject @relation(fields: [fileId], references: [id])
+  uploadedById String
+  uploadedBy   Person     @relation(fields: [uploadedById], references: [id])
+  kind         String     @default("CUSTOMER_ATTACHMENT")
+  createdAt    DateTime   @default(now())
+
+  @@unique([bookingId, fileId])
+}
+
+model ServiceReview {
+  id                  String                 @id
+  serviceId           String
+  service             Service                @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  providerId          String
+  provider            ServiceProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  bookingId           String                 @unique
+  booking             Booking                @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  authorId            String
+  author              Person                 @relation(fields: [authorId], references: [id])
+  rating              Int
+  body                String?
+  status              ServiceReviewStatus    @default(PUBLISHED)
+  providerResponse    String?
+  providerRespondedAt DateTime?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  reports ModerationReport[]
+
+  @@index([serviceId, status])
+  @@index([providerId, status])
+}
+
+model ServiceAudit {
+  id         String   @id
+  actorId    String
+  actor      Person   @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  action     String
+  providerId String?
+  serviceId  String?
+  bookingId  String?
+  reviewId   String?
+  metadata   Json?
+  requestId  String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([bookingId, createdAt])
+}
+
+model Notification {
+  id               String                 @id
+  personId         String
+  person           Person                 @relation(fields: [personId], references: [id], onDelete: Cascade)
+  type             String
+  category         String
+  priority         AttentionPriority      @default(NORMAL)
+  title            String
+  body             String
+  sourceType       String
+  sourceId         String
+  sourceActivityId String?
+  deepLink         String?
+  status           String                 @default("CREATED")
+  createdAt        DateTime               @default(now())
+  deliveredAt      DateTime?
+  seenAt           DateTime?
+  readAt           DateTime?
+  expiresAt        DateTime?
+  idempotencyKey   String?                @unique
+  announcementId   String?
+  announcement     Announcement?          @relation(fields: [announcementId], references: [id])
+  resourceId       String?
+  resource         Resource?              @relation(fields: [resourceId], references: [id])
+  deliveries       NotificationDelivery[]
+
+  @@index([personId, readAt])
+  @@index([personId, category])
+}
+
+model NotificationDelivery {
+  id                String       @id
+  notificationId    String
+  notification      Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  deviceId          String?
+  channel           String
+  status            String
+  providerMessageId String?
+  attemptedAt       DateTime     @default(now())
+  deliveredAt       DateTime?
+  failedAt          DateTime?
+}
+
+model NotificationPreference {
+  id                 String   @id
+  personId           String   @unique
+  person             Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  directMessages     Boolean  @default(true)
+  mentions           Boolean  @default(true)
+  groupMessages      Boolean  @default(true)
+  academicImportant  Boolean  @default(true)
+  assignments        Boolean  @default(true)
+  resources          Boolean  @default(true)
+  classUpdates       Boolean  @default(true)
+  organizationEvents Boolean  @default(true)
+  organizationPosts  Boolean  @default(true)
+  serviceUpdates     Boolean  @default(true)
+  follows            Boolean  @default(true)
+  quietHoursStart    String?
+  quietHoursEnd      String?
+  updatedAt          DateTime @updatedAt
+}
+
+model Device {
+  id                  String    @id
+  personId            String
+  person              Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  platform            String
+  pushToken           String?
+  appVersion          String?
+  deviceMetadata      Json?
+  lastSeenAt          DateTime  @default(now())
+  notificationEnabled Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  revokedAt           DateTime?
+}
+
+model SearchHistory {
+  id        String   @id
+  personId  String
+  person    Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  query     String
+  createdAt DateTime @default(now())
+
+  @@index([personId, createdAt])
+}
+
+model AttentionItem {
+  id          String            @id
+  personId    String
+  priority    AttentionPriority
+  title       String
+  subtitle    String?
+  actionLabel String
+  sourceType  String
+  sourceId    String
+  route       String
+  createdAt   DateTime          @default(now())
+  resolvedAt  DateTime?
+
+  @@index([personId, resolvedAt])
+}
+
+model FollowRelationship {
+  id         String       @id
+  followerId String
+  follower   Person       @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followedId String
+  followed   Person       @relation("Followed", fields: [followedId], references: [id], onDelete: Cascade)
+  status     FollowStatus @default(FOLLOWING)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([followerId, followedId])
+  @@index([followedId, status])
+}
+
+model ConnectionRelationship {
+  id           String           @id
+  personLowId  String
+  personLow    Person           @relation("ConnectionLow", fields: [personLowId], references: [id], onDelete: Cascade)
+  personHighId String
+  personHigh   Person           @relation("ConnectionHigh", fields: [personHighId], references: [id], onDelete: Cascade)
+  requesterId  String
+  addresseeId  String
+  status       ConnectionStatus
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([personLowId, personHighId])
+  @@index([addresseeId, status])
+}
+
+model PrivacySettings {
+  id                   String   @id
+  personId             String   @unique
+  person               Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  profileVisibility    String   @default("CAMPUS")
+  findable             Boolean  @default(true)
+  whoCanFollow         String   @default("EVERYONE")
+  whoCanConnect        String   @default("CAMPUS")
+  whoCanMessage        String   @default("CONNECTIONS")
+  activityVisibility   String   @default("CAMPUS")
+  followerVisibility   String   @default("EVERYONE")
+  followingVisibility  String   @default("EVERYONE")
+  connectionVisibility String   @default("CONNECTIONS")
+  updatedAt            DateTime @updatedAt
+}
+
+model SavedObject {
+  id         String   @id
+  personId   String
+  person     Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  objectType String
+  objectId   String
+  createdAt  DateTime @default(now())
+
+  @@unique([personId, objectType, objectId])
+}
+
+model SocialAudit {
+  id             String   @id
+  actorId        String
+  actor          Person   @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  action         String
+  targetPersonId String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  @@index([actorId, createdAt])
+}
+
+model UsernameChange {
+  id            String   @id
+  personId      String
+  person        Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  previousValue String?
+  nextValue     String
+  createdAt     DateTime @default(now())
+
+  @@index([personId, createdAt])
+}
