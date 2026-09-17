@@ -12,6 +12,8 @@ Files are physical objects. Resources are academic objects with provenance, vers
 
 ## Architecture
 
+The master architecture is **frozen**. See [ARCHITECTURE.md](ARCHITECTURE.md). New work is a change against that document, not a redesign.
+
 ```text
 apps/mobile          Flutter + Riverpod + SQLite
 services/api         NestJS modular monolith, REST /api/v1
