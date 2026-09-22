@@ -3,10 +3,14 @@ import 'package:campusos/app/theme/app_theme.dart';
 import 'package:campusos/core/network/api_error.dart';
 import 'package:campusos/features/courses/domain/course_tab.dart';
 import 'package:campusos/features/courses/presentation/announcements_tab.dart';
+import 'package:campusos/features/courses/presentation/assessments_tab.dart';
 import 'package:campusos/features/courses/presentation/course_tab_bar.dart';
+import 'package:campusos/features/courses/presentation/discussion_tab.dart';
+import 'package:campusos/features/courses/presentation/laboratory_tab.dart';
 import 'package:campusos/features/courses/presentation/overview_tab.dart';
-import 'package:campusos/features/courses/presentation/placeholder_course_tab.dart';
+import 'package:campusos/features/courses/presentation/people_tab.dart';
 import 'package:campusos/features/courses/presentation/resources_tab.dart';
+import 'package:campusos/features/courses/presentation/study_groups_tab.dart';
 import 'package:campusos/features/courses/providers.dart';
 import 'package:campusos/shared/models/course_offering.dart';
 import 'package:campusos/shared/widgets/skeleton_box.dart';
@@ -81,15 +85,17 @@ class CourseDetailScreen extends ConsumerWidget {
       case CourseTab.resources:
         return ResourcesTab(courseOfferingId: courseOfferingId);
       case CourseTab.assignments:
+        return AssessmentsTab(courseOfferingId: courseOfferingId, exams: false);
       case CourseTab.exams:
+        return AssessmentsTab(courseOfferingId: courseOfferingId, exams: true);
       case CourseTab.laboratory:
+        return LaboratoryTab(courseOfferingId: courseOfferingId);
       case CourseTab.discussion:
+        return DiscussionTab(courseOfferingId: courseOfferingId);
       case CourseTab.studyGroups:
+        return StudyGroupsTab(courseOfferingId: courseOfferingId);
       case CourseTab.people:
-        return PlaceholderCourseTab(
-          courseOfferingId: courseOfferingId,
-          title: tab.label,
-        );
+        return PeopleTab(courseOfferingId: courseOfferingId);
     }
   }
 }

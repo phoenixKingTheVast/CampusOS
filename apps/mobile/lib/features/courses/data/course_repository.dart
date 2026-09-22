@@ -5,10 +5,15 @@ import 'package:campusos/core/network/api_client.dart';
 import 'package:campusos/core/permissions/permission_set.dart';
 import 'package:campusos/core/synchronization/sync_engine.dart';
 import 'package:campusos/shared/models/announcement.dart';
+import 'package:campusos/shared/models/assessment.dart';
 import 'package:campusos/shared/models/course_offering.dart';
+import 'package:campusos/shared/models/course_people.dart';
+import 'package:campusos/shared/models/discussion.dart';
 import 'package:campusos/shared/models/json_map.dart';
+import 'package:campusos/shared/models/laboratory.dart';
 import 'package:campusos/shared/models/learn_snapshot.dart';
 import 'package:campusos/shared/models/resource.dart';
+import 'package:campusos/shared/models/study_group.dart';
 
 class CourseRepository {
   CourseRepository({
@@ -156,5 +161,84 @@ class CourseRepository {
           ? PermissionSet.none()
           : PermissionSet.fromJson(jsonDecode(permissionsRaw)),
     );
+  }
+
+  Future<AssessmentList> assessments(String courseOfferingId) async {
+    final body = await _api.get('course-offerings/$courseOfferingId/assessments');
+    return AssessmentList.fromJson(body);
+  }
+
+  Future<Assessment> getAssessment(String assessmentId) async {
+    return Assessment.fromJson(await _api.get('assessments/$assessmentId'));
+  }
+
+  Future<LaboratoryList> laboratories(String courseOfferingId) async {
+    final body = await _api.get('course-offerings/$courseOfferingId/laboratories');
+    return LaboratoryList.fromJson(body);
+  }
+
+  Future<Laboratory> getLaboratory(String laboratoryId) async {
+    return Laboratory.fromJson(await _api.get('laboratories/$laboratoryId'));
+  }
+
+  Future<DiscussionList> discussions(String courseOfferingId) async {
+    final body = await _api.get('course-offerings/$courseOfferingId/discussions');
+    return DiscussionList.fromJson(body);
+  }
+
+  Future<Discussion> getDiscussion(String discussionId) async {
+    return Discussion.fromJson(await _api.get('discussions/$discussionId'));
+  }
+
+  Future<Discussion> createDiscussion({
+    required String courseOfferingId,
+    required String title,
+    required String body,
+  }) async {
+    return Discussion.fromJson(
+      await _api.post(
+        'course-offerings/$courseOfferingId/discussions',
+        data: {'title': title, 'body': body},
+      ),
+    );
+  }
+
+  Future<DiscussionReply> replyToDiscussion({
+    required String discussionId,
+    required String body,
+  }) async {
+    return DiscussionReply.fromJson(
+      await _api.post('discussions/$discussionId/replies', data: {'body': body}),
+    );
+  }
+
+  Future<StudyGroupList> studyGroups(String courseOfferingId) async {
+    final body = await _api.get('course-offerings/$courseOfferingId/study-groups');
+    return StudyGroupList.fromJson(body);
+  }
+
+  Future<StudyGroup> getStudyGroup(String studyGroupId) async {
+    return StudyGroup.fromJson(await _api.get('study-groups/$studyGroupId'));
+  }
+
+  Future<StudyGroup> createStudyGroup({
+    required String courseOfferingId,
+    required String name,
+    String? description,
+  }) async {
+    return StudyGroup.fromJson(
+      await _api.post(
+        'course-offerings/$courseOfferingId/study-groups',
+        data: {'name': name, if (description != null) 'description': description},
+      ),
+    );
+  }
+
+  Future<StudyGroup> joinStudyGroup(String studyGroupId) async {
+    return StudyGroup.fromJson(await _api.post('study-groups/$studyGroupId/join'));
+  }
+
+  Future<CoursePeople> people(String courseOfferingId) async {
+    return CoursePeople.fromJson(await _api.get('course-offerings/$courseOfferingId/people'));
   }
 }

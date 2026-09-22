@@ -264,4 +264,109 @@ export class AcademicService {
       permissions: [...context.permissions],
     };
   }
+
+  async getClass(personId: string, classId: string) {
+    const academicClass = await this.prisma.academicClass.findUnique({
+      where: { id: classId },
+      include: {
+        semester: true,
+        memberships: {
+          where: { status: { in: ['ACTIVE', 'PENDING'] } },
+          include: { person: true },
+        },
+        activities: {
+          where: { status: { in: ['SCHEDULED', 'ONGOING'] }, endTime: { gte: new Date() } },
+          orderBy: { startTime: 'asc' },
+          take: 8,
+        },
+      },
+    });
+    if (!academicClass) {
+      throw Errors.notFound('This class is no longer available.');
+    }
+    const mine = academicClass.memberships.find((item) => item.personId === personId);
+    const isMember = mine?.status === 'ACTIVE';
+    const representatives = academicClass.memberships.filter(
+      (item) => item.status === 'ACTIVE' && item.role === 'CLASS_REPRESENTATIVE',
+    );
+    const announcementCount = isMember
+      ? await this.prisma.announcement.count({
+          where: {
+            status: 'PUBLISHED',
+            courseOffering: { enrollments: { some: { personId, status: 'ACTIVE' } } },
+          },
+        })
+      : 0;
+    return {
+      id: academicClass.id,
+      code: academicClass.code,
+      name: academicClass.name,
+      yearOfStudy: academicClass.yearOfStudy,
+      facultyName: academicClass.facultyName,
+      semester: academicClass.semester.label,
+      membershipStatus: mine?.status ?? 'NONE',
+      membershipRole: mine?.role ?? null,
+      representativeCount: representatives.length,
+      canRequestMembership: representatives.length > 0 && !isMember && mine?.status !== 'PENDING',
+      announcementCount,
+      upcomingCount: academicClass.activities.length,
+      representatives: representatives.map((item) => ({
+        id: item.person.id,
+        name: item.person.displayName,
+      })),
+      members: isMember
+        ? academicClass.memberships
+            .filter((item) => item.status === 'ACTIVE')
+            .map((item) => ({
+              id: item.person.id,
+              name: item.person.displayName,
+              role: item.role,
+            }))
+        : [],
+      activities: isMember
+        ? academicClass.activities.map((item) => ({
+            id: item.id,
+            title: item.title,
+            type: item.type,
+            startTime: item.startTime.toISOString(),
+            location: item.location,
+            route: `/app/calendar/activity/${item.id}`,
+          }))
+        : [],
+      route: `/app/class/${academicClass.id}`,
+    };
+  }
+
+  async people(personId: string, courseOfferingId: string) {
+    const context = await this.access.courseContext(personId, courseOfferingId);
+    if (!context?.can('VIEW')) {
+      throw Errors.permissionDenied("You don't have access to this course.");
+    }
+    const [personnel, enrollments] = await Promise.all([
+      this.prisma.coursePersonnel.findMany({
+        where: { courseOfferingId },
+        include: { person: true },
+      }),
+      this.prisma.enrollment.findMany({
+        where: { courseOfferingId, status: 'ACTIVE' },
+        include: { person: true },
+        take: 80,
+      }),
+    ]);
+    return {
+      teachingTeam: personnel.map((item) => ({
+        id: item.person.id,
+        name: item.person.displayName,
+        role: item.role,
+        route: `/app/profile/${item.person.id}`,
+      })),
+      students: enrollments.map((item) => ({
+        id: item.person.id,
+        name: item.person.displayName,
+        role: 'STUDENT',
+        route: `/app/profile/${item.person.id}`,
+      })),
+      permissions: [...context.permissions],
+    };
+  }
 }

@@ -14,13 +14,7 @@ enum CourseTab {
   final String path;
   final String label;
 
-  bool get isPlaceholder =>
-      this == CourseTab.assignments ||
-      this == CourseTab.exams ||
-      this == CourseTab.laboratory ||
-      this == CourseTab.discussion ||
-      this == CourseTab.studyGroups ||
-      this == CourseTab.people;
+  bool get isPlaceholder => false;
 
   static CourseTab fromPath(String? path) {
     return CourseTab.values.firstWhere(

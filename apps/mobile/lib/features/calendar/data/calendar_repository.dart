@@ -42,6 +42,13 @@ class CalendarRepository {
     }
   }
 
+  Future<CalendarActivity> getActivity(String activityId) async {
+    final payload = await _api.get('activities/$activityId');
+    final item = CalendarActivity.fromJson(payload);
+    await _database.upsertCalendarActivity(item);
+    return item;
+  }
+
   Future<CalendarActivity> createPersonal(Map<String, dynamic> body) async {
     final payload = await _api.post('activities', data: body);
     final item = CalendarActivity.fromJson(payload);

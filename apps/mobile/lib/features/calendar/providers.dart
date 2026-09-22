@@ -25,3 +25,7 @@ final calendarMonthProvider = FutureProvider.autoDispose<List<CalendarActivity>>
 final eventProvider = FutureProvider.autoDispose.family<CampusEventDetail, String>((ref, id) {
   return ref.watch(eventRepositoryProvider).get(id);
 });
+
+final activityProvider = FutureProvider.autoDispose.family<CalendarActivity, String>((ref, id) {
+  return ref.watch(calendarRepositoryProvider).getActivity(id);
+});

@@ -21,6 +21,8 @@ import { CalendarModule } from './calendar/calendar.module';
 import { MessagingModule } from './messaging/messaging.module';
 import { CampusServicesModule } from './campus-services/campus-services.module';
 import { ContentModule } from './content/content.module';
+import { DiscussionsModule } from './discussions/discussions.module';
+import { StudyGroupsModule } from './study-groups/study-groups.module';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { ContentModule } from './content/content.module';
     MessagingModule,
     CampusServicesModule,
     ContentModule,
+    DiscussionsModule,
+    StudyGroupsModule,
   ],
 })
 export class AppModule {}

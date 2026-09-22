@@ -1,6 +1,24 @@
 import 'package:campusos/app/providers.dart';
 import 'package:campusos/features/explore/data/explore_repository.dart';
+import 'package:campusos/features/explore/data/organization_repository.dart';
+import 'package:campusos/shared/models/organization_detail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final exploreRepositoryProvider = Provider<ExploreRepository>(
+  (ref) => ExploreRepository(
+    api: ref.watch(appGraphProvider).api,
+    database: ref.watch(appGraphProvider).database,
+  ),
+);
+
+final organizationRepositoryProvider = Provider<OrganizationRepository>(
+  (ref) => OrganizationRepository(api: ref.watch(appGraphProvider).api),
+);
+
+final organizationProvider =
+    FutureProvider.autoDispose.family<OrganizationDetail, String>((ref, id) {
+  return ref.watch(organizationRepositoryProvider).get(id);
+});
 
 final exploreProvider = AsyncNotifierProvider<ExploreController, ExploreSnapshot>(
   ExploreController.new,

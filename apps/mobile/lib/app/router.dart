@@ -1,15 +1,22 @@
 import 'package:campusos/app/bootstrap/splash_screen.dart';
+import 'package:campusos/features/academic/presentation/class_detail_screen.dart';
 import 'package:campusos/features/authentication/data/auth_repository.dart';
 import 'package:campusos/features/authentication/presentation/otp_screen.dart';
 import 'package:campusos/features/authentication/presentation/phone_screen.dart';
 import 'package:campusos/features/authentication/presentation/welcome_screen.dart';
+import 'package:campusos/features/calendar/presentation/activity_detail_screen.dart';
 import 'package:campusos/features/calendar/presentation/calendar_screen.dart';
 import 'package:campusos/features/calendar/presentation/create_personal_activity_screen.dart';
 import 'package:campusos/features/courses/domain/course_tab.dart';
 import 'package:campusos/features/courses/presentation/announcement_detail_screen.dart';
+import 'package:campusos/features/courses/presentation/assignment_detail_screen.dart';
 import 'package:campusos/features/courses/presentation/course_detail_screen.dart';
+import 'package:campusos/features/courses/presentation/discussion_detail_screen.dart';
+import 'package:campusos/features/courses/presentation/laboratory_detail_screen.dart';
+import 'package:campusos/features/courses/presentation/study_group_detail_screen.dart';
 import 'package:campusos/features/events/presentation/event_detail_screen.dart';
 import 'package:campusos/features/explore/presentation/explore_screen.dart';
+import 'package:campusos/features/explore/presentation/organization_detail_screen.dart';
 import 'package:campusos/features/home/presentation/home_screen.dart';
 import 'package:campusos/features/learn/presentation/learn_screen.dart';
 import 'package:campusos/features/messaging/presentation/conversation_screen.dart';
@@ -130,7 +137,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/app/explore',
-                builder: (context, state) => const ExploreHomeScreen(),
+                builder: (context, state) => const ExploreScreen(),
               ),
             ],
           ),
@@ -301,20 +308,48 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
+        path: '/app/learn/assignment/:assessmentId',
+        builder: (context, state) => AssignmentDetailScreen(
+          assessmentId: state.pathParameters['assessmentId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/app/learn/laboratory/:laboratoryId',
+        builder: (context, state) => LaboratoryDetailScreen(
+          laboratoryId: state.pathParameters['laboratoryId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/app/learn/discussion/:discussionId',
+        builder: (context, state) => DiscussionDetailScreen(
+          discussionId: state.pathParameters['discussionId']!,
+        ),
+      ),
+      GoRoute(
         path: '/app/calendar/new',
         builder: (context, state) => const CreatePersonalActivityScreen(),
       ),
       GoRoute(
+        path: '/app/calendar/create',
+        builder: (context, state) => const CreatePersonalActivityScreen(),
+      ),
+      GoRoute(
         path: '/app/class/:classId',
-        builder: (context, state) => const ComingSoonScreen(title: 'Class'),
+        builder: (context, state) => ClassDetailScreen(
+          classId: state.pathParameters['classId']!,
+        ),
       ),
       GoRoute(
         path: '/app/calendar/activity/:activityId',
-        builder: (context, state) => const ComingSoonScreen(title: 'Activity'),
+        builder: (context, state) => ActivityDetailScreen(
+          activityId: state.pathParameters['activityId']!,
+        ),
       ),
       GoRoute(
         path: '/app/explore/organization/:organizationId',
-        builder: (context, state) => const ComingSoonScreen(title: 'Organization'),
+        builder: (context, state) => OrganizationDetailScreen(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
         path: '/app/explore/event/:eventId',
@@ -324,7 +359,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/app/learn/study-group/:studyGroupId',
-        builder: (context, state) => const ComingSoonScreen(title: 'Study group'),
+        builder: (context, state) => StudyGroupDetailScreen(
+          studyGroupId: state.pathParameters['studyGroupId']!,
+        ),
       ),
       GoRoute(
         path: '/course/:courseOfferingId/resource/:resourceId',
@@ -343,5 +380,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 bool _hidesTabs(String path) {
   return path.contains('/course/') ||
       path.startsWith('/app/learn/resource/') ||
-      path.startsWith('/app/learn/announcement/');
+      path.startsWith('/app/learn/announcement/') ||
+      path.startsWith('/app/learn/assignment/') ||
+      path.startsWith('/app/learn/laboratory/') ||
+      path.startsWith('/app/learn/discussion/') ||
+      path.startsWith('/app/learn/study-group/');
 }

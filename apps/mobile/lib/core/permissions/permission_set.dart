@@ -12,6 +12,9 @@ class PermissionSet {
   static const editResource = 'EDIT_RESOURCE';
   static const endorseResource = 'ENDORSE_RESOURCE';
   static const viewResource = 'VIEW_RESOURCE';
+  static const createDiscussion = 'CREATE_DISCUSSION';
+  static const replyDiscussion = 'REPLY_DISCUSSION';
+  static const createStudyGroup = 'CREATE_STUDY_GROUP';
 
   bool allows(String permission) => _values.contains(permission);
 
@@ -21,6 +24,9 @@ class PermissionSet {
   bool get canCreateResource => allows(createResource);
   bool get canEditResource => allows(editResource);
   bool get canEndorseResource => allows(endorseResource);
+  bool get canCreateDiscussion => allows(createDiscussion);
+  bool get canReplyDiscussion => allows(replyDiscussion);
+  bool get canCreateStudyGroup => allows(createStudyGroup);
 
   List<String> get values => _values.toList(growable: false);
 

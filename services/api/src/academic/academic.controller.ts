@@ -48,4 +48,17 @@ export class AcademicController {
   ) {
     return this.academic.getOffering(actor.personId, courseOfferingId);
   }
+
+  @Get('classes/:classId')
+  getClass(@CurrentActor() actor: Actor, @Param('classId') classId: string) {
+    return this.academic.getClass(actor.personId, classId);
+  }
+
+  @Get('course-offerings/:courseOfferingId/people')
+  people(
+    @CurrentActor() actor: Actor,
+    @Param('courseOfferingId') courseOfferingId: string,
+  ) {
+    return this.academic.people(actor.personId, courseOfferingId);
+  }
 }
