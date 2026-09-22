@@ -9,9 +9,7 @@ import 'package:campusos/shared/models/assessment.dart';
 import 'package:campusos/shared/models/course_offering.dart';
 import 'package:campusos/shared/models/course_people.dart';
 import 'package:campusos/shared/models/discussion.dart';
-import 'package:campusos/shared/models/json_map.dart';
 import 'package:campusos/shared/models/laboratory.dart';
-import 'package:campusos/shared/models/learn_snapshot.dart';
 import 'package:campusos/shared/models/resource.dart';
 import 'package:campusos/shared/models/study_group.dart';
 

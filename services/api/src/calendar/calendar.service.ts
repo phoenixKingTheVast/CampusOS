@@ -67,7 +67,7 @@ export class CalendarService {
     if (!activity) {
       throw Errors.notFound();
     }
-    if (activity.ownerPersonId && activity.ownerPersonId !== personId) {
+    if (activity.visibility === 'PRIVATE' && activity.ownerPersonId && activity.ownerPersonId !== personId) {
       throw Errors.permissionDenied();
     }
     return this.serialize(activity);
