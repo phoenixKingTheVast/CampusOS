@@ -24,7 +24,10 @@ import 'package:campusos/features/messaging/presentation/messages_screen.dart';
 import 'package:campusos/features/notifications/presentation/notifications_screen.dart';
 import 'package:campusos/features/onboarding/presentation/class_verification_screen.dart';
 import 'package:campusos/features/onboarding/presentation/profile_setup_screen.dart';
-import 'package:campusos/features/onboarding/presentation/student_verification_screen.dart';
+import 'package:campusos/features/notifications/presentation/notification_preferences_screen.dart';
+import 'package:campusos/features/onboarding/presentation/student_verification_screen.dart'
+    hide VerificationPendingScreen;
+import 'package:campusos/features/profile/providers.dart';
 import 'package:campusos/features/onboarding/presentation/verification_pending_screen.dart';
 import 'package:campusos/features/profile/presentation/edit_profile_screen.dart';
 import 'package:campusos/features/profile/presentation/profile_screen.dart';
@@ -44,7 +47,6 @@ import 'package:campusos/features/services/presentation/bookings_screen.dart';
 import 'package:campusos/features/services/presentation/provider_public_screen.dart';
 import 'package:campusos/features/services/presentation/service_detail_screen.dart';
 import 'package:campusos/features/services/presentation/services_browse_screen.dart';
-import 'package:campusos/features/settings/presentation/notification_preferences_screen.dart';
 import 'package:campusos/features/settings/presentation/privacy_settings_screen.dart';
 import 'package:campusos/shared/widgets/startup_failure_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -196,9 +198,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/app/profile/blocked',
-        builder: (context, state) => const SocialListScreen(
-          kind: SocialListKind.blocked,
-        ),
+        builder: (context, state) {
+          final personId = ProviderScope.containerOf(context).read(viewerIdProvider) ?? '';
+          return SocialListScreen(personId: personId, list: SocialListKind.blocked);
+        },
       ),
       GoRoute(
         path: '/app/profile/:personId',
@@ -209,22 +212,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/app/profile/:personId/followers',
         builder: (context, state) => SocialListScreen(
-          personId: state.pathParameters['personId'],
-          kind: SocialListKind.followers,
+          personId: state.pathParameters['personId']!,
+          list: SocialListKind.followers,
         ),
       ),
       GoRoute(
         path: '/app/profile/:personId/following',
         builder: (context, state) => SocialListScreen(
-          personId: state.pathParameters['personId'],
-          kind: SocialListKind.following,
+          personId: state.pathParameters['personId']!,
+          list: SocialListKind.following,
         ),
       ),
       GoRoute(
         path: '/app/profile/:personId/connections',
         builder: (context, state) => SocialListScreen(
-          personId: state.pathParameters['personId'],
-          kind: SocialListKind.connections,
+          personId: state.pathParameters['personId']!,
+          list: SocialListKind.connections,
         ),
       ),
       GoRoute(

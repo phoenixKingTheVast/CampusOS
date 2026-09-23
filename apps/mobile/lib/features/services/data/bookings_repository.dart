@@ -46,7 +46,7 @@ class BookingsRepository {
   static const unavailableMessage = 'This booking is no longer available.';
 
   static const offlineBookingMessage =
-      "You're offline and this booking is not saved on this device.";
+      "You're offline and this service/booking is not saved on this device.";
 
   Future<BookingPage> list({
     required bool online,

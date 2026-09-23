@@ -1,6 +1,5 @@
 import 'package:campusos/app/providers.dart';
 import 'package:campusos/core/network/api_error.dart';
-import 'package:campusos/features/courses/providers.dart';
 import 'package:campusos/shared/models/announcement.dart';
 import 'package:campusos/shared/widgets/campus_button.dart';
 import 'package:flutter/material.dart';

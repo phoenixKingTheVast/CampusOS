@@ -112,7 +112,7 @@ class _StudentVerificationScreenState extends ConsumerState<StudentVerificationS
                   Semantics(
                     label: 'Programme',
                     child: DropdownButtonFormField<String>(
-                      value: _selected?.id,
+                      initialValue: _selected?.id,
                       items: _programmes
                           .map(
                             (item) => DropdownMenuItem(

@@ -77,7 +77,7 @@ void main() {
   });
 
   test('cached academic objects drop when membership has ended', () {
-    final lecture = ActivityItem(
+    const lecture = ActivityItem(
       id: 'act',
       title: 'EEE401 Lecture',
       status: 'SCHEDULED',

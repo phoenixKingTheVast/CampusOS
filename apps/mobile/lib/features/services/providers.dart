@@ -5,6 +5,20 @@ import 'package:campusos/shared/models/booking.dart';
 import 'package:campusos/shared/models/campus_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final servicesRepositoryProvider = Provider<ServicesRepository>(
+  (ref) => ServicesRepository(
+    api: ref.watch(appGraphProvider).api,
+    database: ref.watch(appGraphProvider).database,
+  ),
+);
+
+final bookingsRepositoryProvider = Provider<BookingsRepository>(
+  (ref) => BookingsRepository(
+    api: ref.watch(appGraphProvider).api,
+    database: ref.watch(appGraphProvider).database,
+  ),
+);
+
 final serviceCategoriesProvider = FutureProvider.autoDispose<List<ServiceCategory>>((ref) {
   final online = ref.watch(connectivityProvider).isOnline;
   return ref.watch(servicesRepositoryProvider).categories(online: online);

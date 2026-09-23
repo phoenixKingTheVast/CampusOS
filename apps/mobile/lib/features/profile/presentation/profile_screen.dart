@@ -297,6 +297,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         detail: 'Who can see, follow and message you',
         onTap: () => context.push('/app/settings/privacy'),
       ),
+      _LinkRow(
+        label: 'Your bookings',
+        detail: 'Services you have requested',
+        onTap: () => context.push('/app/services/bookings'),
+      ),
+      _LinkRow(
+        label: 'Offer a service',
+        detail: 'Your provider profile, services and hours',
+        onTap: () => context.push('/app/services/provider'),
+      ),
       const SizedBox(height: 20),
       CampusButton(
         label: 'Sign out',

@@ -134,7 +134,7 @@ class _Workspace extends StatelessWidget {
             value: profile.verificationLabel,
             route: '/app/services/provider/verification',
           ),
-          _MetricRow(
+          const _MetricRow(
             title: 'Provider profile',
             value: 'Name, tagline, about and locations',
             route: '/app/services/provider/profile/edit',

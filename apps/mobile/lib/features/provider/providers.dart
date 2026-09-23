@@ -4,6 +4,13 @@ import 'package:campusos/shared/models/booking.dart';
 import 'package:campusos/shared/models/campus_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final providerRepositoryProvider = Provider<ProviderRepository>(
+  (ref) => ProviderRepository(
+    api: ref.watch(appGraphProvider).api,
+    database: ref.watch(appGraphProvider).database,
+  ),
+);
+
 final providerWorkspaceProvider =
     AsyncNotifierProvider<ProviderWorkspaceController, ProviderWorkspace>(
   ProviderWorkspaceController.new,

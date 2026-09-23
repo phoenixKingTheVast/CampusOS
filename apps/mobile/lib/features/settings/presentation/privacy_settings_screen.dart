@@ -24,7 +24,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       _error = null;
     });
     try {
-      await ref.read(privacySettingsProvider.notifier).update({field: value});
+      await ref.read(privacySettingsProvider.notifier).apply({field: value});
     } on ApiError catch (error) {
       if (mounted) {
         setState(() => _error = error.message);

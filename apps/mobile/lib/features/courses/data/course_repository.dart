@@ -7,6 +7,7 @@ import 'package:campusos/core/synchronization/sync_engine.dart';
 import 'package:campusos/shared/models/announcement.dart';
 import 'package:campusos/shared/models/assessment.dart';
 import 'package:campusos/shared/models/course_offering.dart';
+import 'package:campusos/shared/models/learn_snapshot.dart';
 import 'package:campusos/shared/models/course_people.dart';
 import 'package:campusos/shared/models/discussion.dart';
 import 'package:campusos/shared/models/laboratory.dart';

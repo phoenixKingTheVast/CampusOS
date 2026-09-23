@@ -5,6 +5,13 @@ import 'package:campusos/shared/models/conversation.dart';
 import 'package:campusos/shared/models/message.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final messagingRepositoryProvider = Provider<MessagingRepository>(
+  (ref) => MessagingRepository(
+    api: ref.watch(appGraphProvider).api,
+    database: ref.watch(appGraphProvider).database,
+  ),
+);
+
 class MessagingInboxState {
   const MessagingInboxState({
     required this.conversations,
@@ -142,12 +149,12 @@ class MessagingInboxController extends AsyncNotifier<MessagingInboxState> {
     }
   }
 
-  MessagingInboxState _stateFrom(ConversationPage page) {
+  MessagingInboxState _stateFrom(ConversationInbox page) {
     return MessagingInboxState(
       conversations: page.items,
       nextCursor: page.nextCursor,
       fromCache: page.fromCache,
-      lastUpdated: page.lastUpdated,
+      lastUpdated: page.syncedAt,
     );
   }
 }
@@ -169,7 +176,7 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
       messages: page.items,
       nextCursor: page.nextCursor,
       fromCache: page.fromCache,
-      lastUpdated: page.lastUpdated,
+      lastUpdated: page.syncedAt,
       readUpTo: page.lastReadAt,
     );
   }
@@ -203,7 +210,7 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
           messages: page.items,
           nextCursor: page.nextCursor,
           fromCache: page.fromCache,
-          lastUpdated: page.lastUpdated,
+          lastUpdated: page.syncedAt,
           readUpTo: current.readUpTo,
         ),
       );
@@ -257,13 +264,19 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
     }
     final person = ref.read(sessionProvider).person;
     final repository = ref.read(messagingRepositoryProvider);
-    final draft = repository.draft(
+    final clientActionId = MessagingRepository.newClientActionId();
+    final draft = ChatMessage(
+      id: 'local-$clientActionId',
       conversationId: arg,
-      body: body,
       senderId: person?.id ?? '',
       senderName: person?.displayName,
+      body: body,
+      mine: true,
+      createdAt: DateTime.now(),
+      clientActionId: clientActionId,
+      delivery: MessageDelivery.pending,
     );
-    await repository.queue(draft);
+    await repository.cacheOutgoing(draft);
     state = AsyncData(
       current.copyWith(messages: [draft, ...current.messages], clearNotice: true),
     );
@@ -278,7 +291,7 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
       return;
     }
     final pending = message.copyWith(delivery: MessageDelivery.pending);
-    await ref.read(messagingRepositoryProvider).queue(pending);
+    await ref.read(messagingRepositoryProvider).cacheOutgoing(pending);
     state = AsyncData(
       current.copyWith(
         messages: _replace(current.messages, message.id, pending),
@@ -294,7 +307,7 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
       return;
     }
     try {
-      final updated = await ref.read(messagingRepositoryProvider).edit(message, body);
+      final updated = await ref.read(messagingRepositoryProvider).edit(message.id, body);
       _replaceMessage(message.id, updated);
     } on ApiError catch (error) {
       _showNotice(error.message, isError: true);
@@ -303,8 +316,22 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
 
   Future<void> remove(ChatMessage message) async {
     try {
-      final removed = await ref.read(messagingRepositoryProvider).remove(message);
-      _replaceMessage(message.id, removed);
+      await ref.read(messagingRepositoryProvider).remove(message.id);
+      _replaceMessage(
+        message.id,
+        ChatMessage(
+          id: message.id,
+          conversationId: message.conversationId,
+          senderId: message.senderId,
+          senderName: message.senderName,
+          body: message.body,
+          mine: message.mine,
+          createdAt: message.createdAt,
+          removed: true,
+          removedLabel: 'Message removed',
+          delivery: message.delivery,
+        ),
+      );
     } on ApiError catch (error) {
       _showNotice(error.message, isError: true);
     }
@@ -312,8 +339,8 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
 
   Future<void> toggleReaction(ChatMessage message, String reaction) async {
     try {
-      final updated = await ref.read(messagingRepositoryProvider).react(message, reaction);
-      _replaceMessage(message.id, updated);
+      await ref.read(messagingRepositoryProvider).react(message.id, reaction);
+      await refresh();
     } on ApiError catch (error) {
       _showNotice(error.message, isError: true);
     }
@@ -333,7 +360,11 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
   Future<void> setMuted({required bool muted}) async {
     final repository = ref.read(messagingRepositoryProvider);
     try {
-      await repository.setMuted(arg, muted: muted);
+      if (muted) {
+        await repository.mute(arg);
+      } else {
+        await repository.unmute(arg);
+      }
       final detail = await repository.conversation(arg, online: true);
       final current = state.asData?.value;
       if (current != null) {
@@ -370,7 +401,12 @@ class ConversationController extends FamilyAsyncNotifier<ConversationState, Stri
       return;
     }
     try {
-      final sent = await ref.read(messagingRepositoryProvider).deliver(draft);
+      final sent = await ref.read(messagingRepositoryProvider).send(
+            conversationId: draft.conversationId,
+            body: draft.body,
+            clientActionId: draft.clientActionId ?? draft.id,
+          );
+      await ref.read(messagingRepositoryProvider).discardOutgoing(draft.id);
       _replaceMessage(draft.id, sent);
       await ref.read(messagingInboxProvider.notifier).refresh();
     } on ApiError catch (error) {

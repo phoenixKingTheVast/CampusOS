@@ -55,7 +55,7 @@ class _CreatePersonalActivityScreenState extends ConsumerState<CreatePersonalAct
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          CampusTextField(controller: _title, label: 'Title', hintText: 'Study Control Systems'),
+          CampusTextField(controller: _title, label: 'Title', hint: 'Study Control Systems'),
           const SizedBox(height: 12),
           const Text('Today · 19:00–21:00'),
           const Text('Reminder · 30 minutes before'),

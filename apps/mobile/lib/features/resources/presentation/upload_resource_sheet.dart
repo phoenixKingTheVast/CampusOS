@@ -1,9 +1,9 @@
 import 'package:campusos/app/providers.dart';
 import 'package:campusos/core/network/api_error.dart';
-import 'package:campusos/features/courses/providers.dart';
 import 'package:campusos/shared/models/resource.dart';
 import 'package:campusos/shared/widgets/campus_button.dart';
 import 'package:campusos/shared/widgets/campus_text_field.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,10 +50,49 @@ class _UploadResourceSheetState extends ConsumerState<UploadResourceSheet> {
   }
 
   Future<void> _pick() async {
+    setState(() => _error = null);
+    final result = await FilePicker.platform.pickFiles(withData: true);
+    if (!mounted || result == null || result.files.isEmpty) {
+      return;
+    }
+    final picked = result.files.single;
+    final bytes = picked.bytes;
+    if (bytes == null || bytes.isEmpty) {
+      setState(() => _error = 'That file could not be read on this device.');
+      return;
+    }
     setState(() {
-      _error =
-          'File picking is available after the iOS project is generated with flutter create.';
+      _file = _PickedFile(
+        name: picked.name,
+        bytes: bytes,
+        mimeType: _mimeType(picked.extension),
+      );
+      _status = picked.name;
     });
+  }
+
+  String _mimeType(String? extension) {
+    switch (extension?.toLowerCase()) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'png':
+        return 'image/png';
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'txt':
+        return 'text/plain';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'ppt':
+        return 'application/vnd.ms-powerpoint';
+      case 'pptx':
+        return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+      default:
+        return 'application/octet-stream';
+    }
   }
 
   Future<void> _upload() async {
@@ -118,7 +157,7 @@ class _UploadResourceSheetState extends ConsumerState<UploadResourceSheet> {
             const SizedBox(height: 12),
             if (widget.categories.isNotEmpty)
               DropdownButtonFormField<String>(
-                value: _category?.key,
+                initialValue: _category?.key,
                 decoration: const InputDecoration(labelText: 'Category'),
                 items: widget.categories
                     .map(

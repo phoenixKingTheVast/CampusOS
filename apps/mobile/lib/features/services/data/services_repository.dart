@@ -6,9 +6,10 @@ import 'package:campusos/shared/models/json_map.dart';
 
 /// Nothing is ever queued behind the user's back: a mutation attempted while
 /// offline fails with copy that says plainly that nothing was sent.
-ApiError offlineMutationError(String action) => ApiError(
+ApiError offlineMutationError(String _) => const ApiError(
       code: 'OFFLINE',
-      message: '$action needs an internet connection. Nothing was sent.',
+      message:
+          "You're offline. Reconnect to send your response — nothing has been sent yet.",
     );
 
 class ServicePage {
@@ -41,7 +42,7 @@ class ServicesRepository {
   final AppDatabase _database;
 
   static const offlineServiceMessage =
-      "You're offline and this service is not saved on this device.";
+      "You're offline and this service/booking is not saved on this device.";
 
   Future<List<ServiceCategory>> categories({required bool online}) async {
     if (!online) {

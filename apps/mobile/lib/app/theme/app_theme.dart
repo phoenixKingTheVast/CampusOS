@@ -41,12 +41,11 @@ class AppTheme {
       canvasColor: AppColors.cream,
       splashFactory: NoSplash.splashFactory,
       visualDensity: VisualDensity.standard,
-      platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
+          TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
         },
       ),
       appBarTheme: const AppBarTheme(

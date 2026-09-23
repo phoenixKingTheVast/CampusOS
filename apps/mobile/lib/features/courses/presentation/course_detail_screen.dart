@@ -1,4 +1,3 @@
-import 'package:campusos/app/providers.dart';
 import 'package:campusos/app/theme/app_theme.dart';
 import 'package:campusos/core/network/api_error.dart';
 import 'package:campusos/features/courses/domain/course_tab.dart';

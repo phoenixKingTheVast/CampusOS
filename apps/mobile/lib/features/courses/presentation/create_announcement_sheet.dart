@@ -68,7 +68,7 @@ class _CreateAnnouncementSheetState extends ConsumerState<CreateAnnouncementShee
           Semantics(
             label: 'Priority',
             child: DropdownButtonFormField<String>(
-              value: _priority,
+              initialValue: _priority,
               items: const [
                 DropdownMenuItem(value: 'NORMAL', child: Text('Normal')),
                 DropdownMenuItem(value: 'IMPORTANT', child: Text('IMPORTANT')),
