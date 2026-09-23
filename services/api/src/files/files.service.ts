@@ -295,7 +295,7 @@ export class FilesService {
         sizeBytes: assembled.length,
         securityClass,
         lifecycleState: 'AVAILABLE',
-        processingState: persistProcessingState('AVAILABLE'),
+        processingState: persistProcessingState('AVAILABLE') as never,
       },
     });
     session.state = 'COMPLETED';
